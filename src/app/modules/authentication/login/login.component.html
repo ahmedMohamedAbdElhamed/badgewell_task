@@ -1,0 +1,88 @@
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="handleLogin(loginForm)"
+  class="form_container mx-auto"
+>
+  <div class="logo_container">
+    <img
+      class="w-100"
+      src="./assets/badgewell_logo.jfif"
+      alt="badgewell_logo"
+    />
+  </div>
+  <div class="title_container">
+    <p class="title">Log In to Your BadgeWell Accounts</p>
+    <span class="subtitle">Welcome Back To BadgeWell.</span>
+  </div>
+  <br />
+  <div class="input_container">
+    <label class="input_label" for="userName_field">User Name</label>
+    <mat-form-field appearance="outline" class="w-100">
+      <input
+        matInput
+        id="userName_field"
+        type="text"
+        placeholder="example: ahmed"
+        formControlName="username"
+      />
+      <mat-icon matSuffix>person</mat-icon>
+      <mat-error *ngIf="loginForm.get('username')?.hasError('required')"
+        >User name is required</mat-error
+      >
+      <mat-error *ngIf="loginForm.get('username')?.hasError('minlength')"
+        >User name should be at least 3 characters</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div class="input_container">
+    <label class="input_label" for="password_field">Password</label>
+    <mat-form-field appearance="outline" class="w-100">
+      <input
+        id="password_field"
+        matInput
+        [type]="hide ? 'password' : 'text'"
+        placeholder="password"
+        formControlName="password"
+      />
+      <button
+        type="button"
+        class="border-0 bg-transparent show-password-padding"
+        mat-icon-button
+        matSuffix
+        (click)="hide = !hide"
+        [attr.aria-label]="'Hide password'"
+      >
+        <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+      <mat-error *ngIf="loginForm.get('password')?.hasError('required')"
+        >Password is required</mat-error
+      >
+      <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')"
+        >Password must be at least 6 characters long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <button
+    [disabled]="!loginForm.valid || loading"
+    title="Log In"
+    class="sign-in_btn"
+    [ngStyle]="{ cursor: !loginForm.valid ? 'not-allowed' : 'pointer' }"
+  >
+    <span *ngIf="loading" class="loader"></span>
+    <span *ngIf="!loading">Log In</span>
+  </button>
+
+  <div class="separator">
+    <hr class="line" />
+    <span>Or</span>
+    <hr class="line" />
+  </div>
+  <a
+    title="Sign Up"
+    routerLink="/authentication/signup"
+    class="text-decoration-none sign-in_ggl"
+  >
+    <span>Sign Up</span>
+  </a>
+  <p class="note">Terms of use &amp; Conditions</p>
+</form>

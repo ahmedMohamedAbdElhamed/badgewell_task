@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand"
+      ><img src="./assets/badgewell_logo.jfif" alt="badgewell_logo" />
+      <span class="ms-2 fs-6">BadgeWell Task</span></a
+    >
+    <div class="navbar" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto">
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <a
+            (click)="logout()"
+            class="btn btn-sm btn-outline-warning"
+            routerLink="/authentication/login"
+            >logout</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
