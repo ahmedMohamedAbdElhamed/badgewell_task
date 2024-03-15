@@ -11,7 +11,9 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
+  // userData behaviour subject on init of project I set the value of decoded refresh token in it to alert other components if the user is already registered or not like navbar
   userData: BehaviorSubject<any> = new BehaviorSubject(null);
+
   constructor(private _HttpClient: HttpClient, private _Router: Router) {
     this.settingUserData(this.decodeRefreshToken());
   }

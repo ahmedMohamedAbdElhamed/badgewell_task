@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../environment/environment';
-import { Constants } from '../constants/constants';
 import { Observable } from 'rxjs';
+import { environment } from '../environment/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,14 +11,7 @@ export class ContactListService {
 
   getContactList(page: number): Observable<any> {
     return this._HttpClient.get(
-      `${environment.apiUrl}/contacts?page=${page}&pageSize=5`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(
-            Constants.access_token
-          )}`,
-        },
-      }
+      `${environment.apiUrl}/contacts?page=${page}&pageSize=5`
     );
   }
 }

@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class NotificationService {
+  // notification of angular toaster alerts
   notificationSettings: {} = {
     closeButton: true,
     positionClass: 'toast-top-right',

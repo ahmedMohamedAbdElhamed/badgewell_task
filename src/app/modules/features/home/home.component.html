@@ -1,6 +1,6 @@
 <div class="back-ground"></div>
 <div class="row g-4">
-  <div class="col-lg-4 col-md-6" *ngFor="let card of response">
+  <div class="col-lg-4 col-md-6" *ngFor="let card of contacts$ | async">
     <div class="card">
       <div class="card__img">
         <img src="./assets/Card_Image.png" alt="bagdewell_background" />

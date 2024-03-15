@@ -10,7 +10,7 @@ export interface Card {
   name: string;
   image: string;
   phone: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 }

@@ -11,6 +11,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { TokenInterceptorInterceptor } from './interceptors/token-interceptor.interceptor';
+import { Loading, contactListReducer, page } from './store/store.reducers';
+import { ChangePageEffect } from './store/store.effects';
 
 @NgModule({
   declarations: [AppComponent, NavbarComponent],
@@ -21,8 +23,12 @@ import { TokenInterceptorInterceptor } from './interceptors/token-interceptor.in
     BrowserAnimationsModule,
     NgbModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot({
+      contacts: contactListReducer,
+      pageNumber: page,
+      flageLoading: Loading,
+    }),
+    EffectsModule.forRoot([ChangePageEffect]),
   ],
   providers: [
     {

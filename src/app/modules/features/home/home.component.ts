@@ -1,7 +1,8 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Card, ContactListResponse } from 'src/app/interfaces/contact_list';
-import { ContactListService } from 'src/app/services/contact-list.service';
+import { Observable, Subscription } from 'rxjs';
+import { Card } from 'src/app/interfaces/contact_list';
+import { initPage, nextPage } from 'src/app/store/store.actions';
 
 @Component({
   selector: 'app-home',
@@ -9,45 +10,57 @@ import { ContactListService } from 'src/app/services/contact-list.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  // loading flag to change in UI
   isgettingData!: boolean;
-  page: number = 1;
-  responseData!: ContactListResponse;
-  response: Card[] = [];
-  constructor(
-    private _ContactListService: ContactListService,
-    private _Store: Store
-  ) {}
+  // Response length to handle scroll event to stop it once all data is loaded
+  responseLength!: number;
 
+  responseLengthSubscription: Subscription = new Subscription();
+  flageChangingSubscription: Subscription = new Subscription();
+  // Observable variables to store in it store state
+  contacts$: Observable<Card[]>;
+  flagLoading$: Observable<boolean>;
+
+  constructor(
+    private _Store: Store<{ contacts: Card[]; flageLoading: boolean }>
+  ) {
+    // Selecting data
+    this.contacts$ = _Store.select('contacts');
+    this.flagLoading$ = _Store.select('flageLoading');
+  }
+
+  // Host listner to listen for scrolling to dispatch action on certain condition
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any) {
     if (
       !this.isgettingData &&
-      window.innerHeight + window.scrollY <= document.body.scrollHeight &&
-      this.response.length < this.responseData.totalCount
+      window.innerHeight + window.scrollY == document.body.scrollHeight &&
+      this.responseLength < 100
     ) {
-      this.getAllContacts();
+      this._Store.dispatch(nextPage());
     }
   }
 
   ngOnInit(): void {
-    this.getAllContacts();
-  }
-
-  getAllContacts() {
-    this.isgettingData = true;
-    this._ContactListService.getContactList(this.page).subscribe({
-      next: (response: ContactListResponse) => {
-        this.responseData = response;
-        this.page += 1;
-        this.response = [...this.response, ...response.data];
-        this.isgettingData = false;
-      },
-      error: (error) => {
-        console.log(error);
-        this.isgettingData = false;
+    // subscribe to listen to contacts change to update the response length
+    this.responseLengthSubscription = this.contacts$.subscribe({
+      next: (data: Card[]) => {
+        this.responseLength = data.length;
       },
     });
+
+    // subscribe to listen to contacts change to update loading in UI & behave scroll event
+    this.flageChangingSubscription = this.flagLoading$.subscribe({
+      next: (data: boolean) => {
+        this.isgettingData = data;
+      },
+    });
+    // getting initial value
+    this._Store.dispatch(initPage());
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.responseLengthSubscription.unsubscribe();
+    this.flageChangingSubscription.unsubscribe();
+  }
 }

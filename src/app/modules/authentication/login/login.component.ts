@@ -31,13 +31,17 @@ export class LoginComponent implements OnDestroy {
     private _Router: Router
   ) {}
 
+  // Handle login method
   handleLogin(form: FormGroup) {
     if (form.valid) {
       this.loading = true;
       this._AuthService.login(form.value).subscribe({
         next: (res: AuthResponse) => {
+          // programmatic routing to home page
           this._Router.navigate([this._AuthService.goToHomePage()]);
+          // setting tokens
           this._AuthService.settingTokens(res.accessToken, res.refreshToken);
+          // setting user data to keep navbar updated if user logged in or not to change view
           this._AuthService.settingUserData(
             this._AuthService.decodeRefreshToken()
           );
