@@ -1,1 +1,44 @@
-<p>home works!</p>
+<div class="back-ground"></div>
+<div class="row g-4">
+  <div class="col-lg-4 col-md-6" *ngFor="let card of response">
+    <div class="card">
+      <div class="card__img">
+        <img src="./assets/Card_Image.png" alt="bagdewell_background" />
+      </div>
+      <div class="card__avatar">
+        <img [src]="card.image" alt="{{ card.name }}" />
+      </div>
+      <div class="card__title">{{ card.name }}</div>
+      <div class="card__subtitle">Web Development</div>
+      <div class="card__wrapper">
+        <a href="tel:{{ card.phone }}" class="btn card__btn">{{
+          card.phone
+        }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner For Getting Data -->
+<div *ngIf="isgettingData" class="loading">
+  <div class="box box-1">
+    <div class="side-left"></div>
+    <div class="side-right"></div>
+    <div class="side-top"></div>
+  </div>
+  <div class="box box-2">
+    <div class="side-left"></div>
+    <div class="side-right"></div>
+    <div class="side-top"></div>
+  </div>
+  <div class="box box-3">
+    <div class="side-left"></div>
+    <div class="side-right"></div>
+    <div class="side-top"></div>
+  </div>
+  <div class="box box-4">
+    <div class="side-left"></div>
+    <div class="side-right"></div>
+    <div class="side-top"></div>
+  </div>
+</div>

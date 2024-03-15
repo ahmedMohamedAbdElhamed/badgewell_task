@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, subscribeOn } from 'rxjs';
 import { AuthForm } from '../interfaces/auth';
 import { environment } from '../environment/environment';
 import { Constants } from '../constants/constants';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
-import { User } from '../models/user';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -13,7 +12,9 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   userData: BehaviorSubject<any> = new BehaviorSubject(null);
-  constructor(private _HttpClient: HttpClient, private _Router: Router) {}
+  constructor(private _HttpClient: HttpClient, private _Router: Router) {
+    this.settingUserData(this.decodeRefreshToken());
+  }
 
   goToLoginPage(): string {
     return '/authentication/login';
@@ -39,6 +40,14 @@ export class AuthService {
     this._Router.navigate([this.goToLoginPage()]);
   }
 
+  updateToken(refreshToken: string): Observable<any> {
+    console.log('Token Update Request');
+
+    return this._HttpClient.post(`${environment.apiUrl}/auth/refresh-token`, {
+      refreshToken,
+    });
+  }
+
   checkRefreshTokens(): boolean {
     if (localStorage.getItem(Constants.refresh_token)) {
       return true;
@@ -51,6 +60,17 @@ export class AuthService {
     localStorage.setItem(Constants.refresh_token, refreshToken);
   }
 
+  decodeAccessToken() {
+    if (localStorage.getItem(Constants.access_token)) {
+      const encodedUserToken = JSON.stringify(
+        localStorage.getItem(Constants.access_token)
+      );
+      const decodedUserToken = jwtDecode(encodedUserToken);
+      return decodedUserToken;
+    }
+    return null;
+  }
+
   decodeRefreshToken() {
     if (localStorage.getItem(Constants.refresh_token)) {
       const encodedUserToken = JSON.stringify(
@@ -59,7 +79,6 @@ export class AuthService {
       const decodedUserToken = jwtDecode(encodedUserToken);
       return decodedUserToken;
     }
-
     return null;
   }
 

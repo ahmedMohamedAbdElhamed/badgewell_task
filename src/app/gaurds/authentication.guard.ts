@@ -6,10 +6,11 @@ import { NotificationService } from '../services/notification.service';
 export const authenticationGuard: CanActivateFn = (route, state) => {
   const _AuthService = inject(AuthService);
   const _NotificationService = inject(NotificationService);
-  const decodedToken = _AuthService.decodeRefreshToken();
+  const decodedRefreshToken = _AuthService.decodeRefreshToken();
+  const decodedAccessToken = _AuthService.decodeAccessToken();
 
-  if (decodedToken) {
-    if (_AuthService.checkExpiredSession(decodedToken)) {
+  if (decodedAccessToken && decodedRefreshToken) {
+    if (_AuthService.checkExpiredSession(decodedRefreshToken)) {
       return true;
     } else {
       _NotificationService.showWarning('Session expired please log in again');
@@ -17,7 +18,6 @@ export const authenticationGuard: CanActivateFn = (route, state) => {
       return false;
     }
   } else {
-    _NotificationService.showError('Not Authenticated');
     _AuthService.logout();
     return false;
   }
